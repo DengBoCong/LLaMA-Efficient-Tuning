@@ -12,8 +12,8 @@ from llmtuner.extras.logging import get_logger
 logger = get_logger(__name__)
 
 
-def get_state_dict(model: torch.nn.Module) -> Dict[str, torch.Tensor]: # get state dict containing trainable parameters
-    state_dict = model.state_dict()
+def get_state_dict(model: torch.nn.Module) -> Dict[str, torch.Tensor]:
+    state_dict: Dict[str, torch.Tensor] = model.state_dict()
     filtered_state_dict = {}
 
     for k, v in model.named_parameters():

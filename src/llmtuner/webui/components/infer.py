@@ -1,19 +1,20 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 import gradio as gr
-from gradio.components import Component
 
 from llmtuner.webui.chat import WebChatModel
 from llmtuner.webui.components.chatbot import create_chat_box
 
+if TYPE_CHECKING:
+    from gradio.components import Component
 
-def create_infer_tab(top_elems: Dict[str, Component]) -> Dict[str, Component]:
+
+def create_infer_tab(top_elems: Dict[str, "Component"]) -> Dict[str, "Component"]:
     with gr.Row():
         load_btn = gr.Button()
         unload_btn = gr.Button()
-        quantization_bit = gr.Dropdown([8, 4])
 
-    info_box = gr.Markdown()
+    info_box = gr.Textbox(show_label=False, interactive=False)
 
     chat_model = WebChatModel()
     chat_box, chatbot, history, chat_elems = create_chat_box(chat_model)
@@ -21,9 +22,13 @@ def create_infer_tab(top_elems: Dict[str, Component]) -> Dict[str, Component]:
     load_btn.click(
         chat_model.load_model,
         [
-            top_elems["lang"], top_elems["model_name"], top_elems["checkpoints"],
-            top_elems["finetuning_type"], top_elems["template"],
-            quantization_bit
+            top_elems["lang"],
+            top_elems["model_name"],
+            top_elems["checkpoints"],
+            top_elems["finetuning_type"],
+            top_elems["quantization_bit"],
+            top_elems["template"],
+            top_elems["system_prompt"]
         ],
         [info_box]
     ).then(
@@ -39,7 +44,6 @@ def create_infer_tab(top_elems: Dict[str, Component]) -> Dict[str, Component]:
     )
 
     return dict(
-        quantization_bit=quantization_bit,
         info_box=info_box,
         load_btn=load_btn,
         unload_btn=unload_btn,
